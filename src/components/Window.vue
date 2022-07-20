@@ -2,24 +2,35 @@
 import { computed, onUnmounted, ref } from 'vue'
 import { useDraggable } from '@vueuse/core'
 import { } from 'ztshared'
+import { moveWindowToNav } from '../hooks/move';
+
+
 const props = defineProps<{
   body?: string
   index: number
   id: number
   isShadow: boolean
+  item: {
+    id: number;
+    type: string;
+    body: string;
+  }
 }>()
 const emit = defineEmits(['els-down'])
 const els = ref<HTMLElement | null>()
 
 const { position } = useDraggable(els, {
   exact: true,
+  initialValue: { x: 500, y: 200 },
+  stopPropagation: true,
+  pointerTypes: ['mouse'],
 })
 
 const calculationStyle = ref({
   height: '300px',
   width: '300px'
 })
-
+const po = ref({})
 const dynamicStyle = computed(() => {
   const { height, width } = calculationStyle.value
   const { index, isShadow } = props
@@ -44,7 +55,9 @@ const elsPosition = {
 }
 
 function close() { }
-function narrow() { }
+function narrow() {
+  moveWindowToNav(els.value as any, props.item, po as any)
+}
 
 function pointerdown() {
   const { left, top } = els.value!.getClientRects()[0]
@@ -81,8 +94,8 @@ onUnmounted(() => {
 
 <template>
   <div
-    :style="dynamicStyle"
-    class='min-h-300px min-w-300px bg-red-50 w-500px h-410px rounded-xl cursor-move  absolute overflow-auto pt-10'
+    :style="{ ...dynamicStyle, ...po }"
+    class='mys min-h-300px min-w-300px bg-red-50 w-500px h-410px rounded-xl cursor-move  absolute overflow-auto pt-10'
     ref="els"
     @pointerdown="pointerdownEls"
   >
@@ -93,11 +106,11 @@ onUnmounted(() => {
     </div>
     <div
       class="w-4 h-4 rounded-full bg-red-400 absolute top-3 left-3 cursor-pointer"
-      @click="close"
+      @click.stop="close"
     ></div>
     <div
       class="w-4 h-4 rounded-full bg-yellow-400 absolute top-3 left-9 cursor-pointer"
-      @click="narrow"
+      @click.stop="narrow"
     ></div>
     <div
       class="w-2 h-2 bg-blue-300 absolute bottom-0 right-0 cursor-[nwse-resize]"
@@ -107,4 +120,7 @@ onUnmounted(() => {
 </template>
 
 <style lang='scss' scoped>
+.mys {
+  transform-origin: 0 0;
+}
 </style>

@@ -10,11 +10,14 @@
   },
   "dependencies": {
     "@vueuse/core": "^8.9.4",
+    "animejs": "^3.2.1",
+    "pinia": "^2.0.16",
     "vue": "^3.2.37",
     "ztshared": "^0.0.12"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.25.2",
+    "@types/animejs": "^3.1.5",
     "@unocss/preset-attributify": "^0.44.5",
     "@unocss/preset-icons": "^0.44.5",
     "@unocss/preset-uno": "^0.44.5",
